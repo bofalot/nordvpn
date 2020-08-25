@@ -2,7 +2,7 @@ ARG ARCH=amd64
 FROM balenalib/${ARCH}-debian
 
 ARG NORDVPN_VERSION
-LABEL maintainer="Julio Gutierrez"
+LABEL maintainer="bofalot"
 
 HEALTHCHECK --interval=1m --timeout=20s --start-period=1m \
   CMD if test $( curl -m 10 -s https://api.nordvpn.com/vpn/check/full | jq -r '.["status"]' ) = "Protected" ; then exit 0; else nordvpn connect ${CONNECT} ; exit $?; fi
