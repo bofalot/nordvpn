@@ -6,7 +6,7 @@
 DOCKER_NET="$(ip -o addr show dev eth0 | awk '$3 == "inet" {print $4}')" 
 
 kill_switch() {
-	local  docker6_network="$(ip -o addr show dev eth0 | awk '$3 == "inet6" {print $4; exit}')"	
+	local  docker6_network="$(ip -o addr show dev eth0 | awk '$3 == "inet6" {print $4; exit}')"
 
 	iptables -F
 	iptables -X
@@ -115,9 +115,9 @@ setup_nordvpn() {
 
 kill_switch
 
-pkill nordvpnd 
+pkill nordvpnd
 rm -f /run/nordvpnd.sock
-sg vpn -c nordvpnd & 
+sg vpn -c nordvpnd &
 
 while [ ! -S /run/nordvpnd.sock ]; do
 	sleep 0.25
