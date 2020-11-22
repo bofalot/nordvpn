@@ -1,9 +1,9 @@
 #!/bin/bash
 [[ -n ${DEBUG} ]] && set -x
-[[ -n ${COUNTRY} && -z ${CONNECT} ]] && CONNECT=${COUNTRY}
+[[ -n ${COUNTRY} && -z ${PRIMARY} ]] && PRIMARY=${COUNTRY}
 [[ "${GROUPID:-""}" =~ ^[0-9]+$ ]] && groupmod -g $GROUPID -o vpn
 
-DOCKER_NET="$(ip -o addr show dev eth0 | awk '$3 == "inet" {print $4}')" 
+DOCKER_NET="$(ip -o addr show dev eth0 | awk '$3 == "inet" {print $4}')"
 
 kill_switch() {
 	local  docker6_network="$(ip -o addr show dev eth0 | awk '$3 == "inet6" {print $4; exit}')"
@@ -103,7 +103,7 @@ create_tun_device() {
 
 setup_nordvpn() {
 	[[ -n ${TECHNOLOGY} ]] && nordvpn set technology ${TECHNOLOGY}
-	[[ -n ${PROTOCOL} ]]  && nordvpn set protocol ${PROTOCOL} 
+	[[ -n ${PROTOCOL} ]]  && nordvpn set protocol ${PROTOCOL}
 	[[ -n ${OBFUSCATE} ]] && nordvpn set obfuscate ${OBFUSCATE}
 	[[ -n ${CYBER_SEC} ]] && nordvpn set cybersec ${CYBER_SEC}
 	[[ -n ${DNS} ]] && nordvpn set dns ${DNS//[;,]/ }
@@ -128,7 +128,7 @@ nordvpn login -u ${USER} -p "${PASS}"
 setup_nordvpn
 create_tun_device
 
-nordvpn connect ${CONNECT} || exit 1
+nordvpn connect ${PRIMARY} || exit 1
 nordvpn status
 
 tail -f --pid=$(pidof nordvpnd) /var/log/nordvpn/daemon.log

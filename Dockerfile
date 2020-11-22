@@ -3,10 +3,11 @@ FROM balenalib/${ARCH}-debian
 
 LABEL maintainer="bofalot"
 
-HEALTHCHECK --interval=1m --timeout=20s --start-period=1m \
-  CMD if test $( curl -m 10 -s https://api.nordvpn.com/vpn/check | jq -r '.["status"]' ) = "Protected" ; then exit 0; else nordvpn d ; nordvpn c ${CONNECT} ; exit $?; fi
+COPY start_vpn.sh /usr/bin
+COPY healthcheck.sh /usr/bin
 
-#CROSSRUN [ "cross-build-start" ]
+HEALTHCHECK --interval=1m --timeout=20s --start-period=1m CMD bash /usr/bin/healthcheck.sh
+
 RUN addgroup --system vpn && \
     apt-get update && apt-get upgrade -y && \
     apt-get install -y wget dpkg curl gnupg2 jq ipset iptables xsltproc && \
@@ -21,8 +22,5 @@ RUN addgroup --system vpn && \
         /tmp/* \
         /var/lib/apt/lists/* \
         /var/tmp/*
-#CROSSRUN [ "cross-build-end" ]
 
 CMD /usr/bin/start_vpn.sh
-COPY start_vpn.sh /usr/bin
-
