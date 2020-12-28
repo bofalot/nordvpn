@@ -1,7 +1,7 @@
 #!/bin/bash
 
-[[ -z "$PRIMARY" ]] && PRIMARY=uk1811
-[[ -z "$SECONDARY" ]] && SECONDARY=uk2113
+[[ -z "$PRIMARY" ]] && PRIMARY=p2p
+[[ -z "$SECONDARY" ]] && SECONDARY=uk
 
 function check {
   [[ $( curl -m 10 -s https://api.nordvpn.com/vpn/check | jq -r '.["status"]' ) == "Protected" ]]
